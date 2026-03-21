@@ -1,2 +1,7 @@
-OPENAI_API_KEY=your_api_key_here
-PORT=3000
+import Generator from "./pages/Generator";
+
+function App() {
+  return <Generator />;
+}
+
+export default App;

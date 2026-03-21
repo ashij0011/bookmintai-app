@@ -1,79 +1,58 @@
-import React, { useState } from "react";
-import axios from "axios";
+require("dotenv").config();
 
-const Generator = () => {
-  const [topic, setTopic] = useState("");
-  const [pages, setPages] = useState(10);
-  const [loading, setLoading] = useState(false);
+const express = require("express");
+const cors = require("cors");
+const path = require("path");
+const { generateImages } = require("./services/aiService");
+const { createPDF } = require("./utils/pdfGenerator");
 
-  const handleGenerate = async () => {
-    if (!topic) {
-      alert("Please enter a topic");
-      return;
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+app.use(cors());
+app.use(express.json({ limit: "10mb" }));
+
+app.get("/api/health", (req, res) => {
+  res.json({ status: "OK" });
+});
+
+app.post("/api/generate-book", async (req, res) => {
+  try {
+    const { topic, pages } = req.body;
+
+    if (!topic || !pages) {
+      return res.status(400).json({ error: "Missing topic or pages" });
     }
 
-    try {
-      setLoading(true);
+    console.log("Generating images...");
 
-      const response = await axios.post(
-        "/api/generate-book",
-        {
-          topic,
-          pages,
-        },
-        {
-          responseType: "blob", // IMPORTANT for PDF download
-        }
-      );
+    const images = await generateImages(topic, pages);
 
-      // Create download link
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement("a");
+    console.log("Creating PDF...");
 
-      link.href = url;
-      link.setAttribute("download", `${topic}-coloring-book.pdf`);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
+    const pdfBytes = await createPDF(images);
 
-    } catch (error) {
-      console.error(error);
-      alert("Failed to generate book");
-    } finally {
-      setLoading(false);
-    }
-  };
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename=${topic}-coloring-book.pdf`
+    );
 
-  return (
-    <div style={{ textAlign: "center", marginTop: "50px" }}>
-      <h1>AI Coloring Book Generator</h1>
+    res.send(pdfBytes);
 
-      <input
-        type="text"
-        placeholder="Enter topic (e.g. dinosaurs)"
-        value={topic}
-        onChange={(e) => setTopic(e.target.value)}
-        style={{ padding: "10px", width: "300px", marginBottom: "10px" }}
-      />
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to generate book" });
+  }
+});
 
-      <br />
+// Serve frontend
+app.use(express.static(path.join(__dirname, "../frontend/dist")));
 
-      <input
-        type="number"
-        min="10"
-        max="50"
-        value={pages}
-        onChange={(e) => setPages(e.target.value)}
-        style={{ padding: "10px", width: "100px", marginBottom: "20px" }}
-      />
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
+});
 
-      <br />
-
-      <button onClick={handleGenerate} disabled={loading}>
-        {loading ? "Generating..." : "Generate Coloring Book"}
-      </button>
-    </div>
-  );
-};
-
-export default Generator;
+app.listen(PORT, () => {
+  console.log(`Server running on ${PORT}`);
+});
