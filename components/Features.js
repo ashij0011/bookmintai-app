@@ -10,7 +10,7 @@ export default function Features() {
     },
     {
       title: 'Unique Every Time',
-      desc: 'AI generates fresh illustrations for every request. Your dinosaur book won't look like anyone else\'s.',
+      desc: "AI generates fresh illustrations for every request. Your dinosaur book won't look like anyone else's.",
     },
     {
       title: 'Kid-Friendly Art',
