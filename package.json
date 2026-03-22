@@ -1,10 +1,25 @@
 {
-  "name": "bookmintai-app",
+  "name": "bookmintai",
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "install-all": "cd server && npm install && cd ../frontend && npm install",
-    "build": "cd frontend && npm run build",
-    "start": "node server/index.js"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start -p ${PORT:-3000}",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "next": "14.2.5",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "pdf-lib": "1.17.1",
+    "openai": "4.52.7"
+  },
+  "devDependencies": {
+    "autoprefixer": "10.4.19",
+    "postcss": "8.4.40",
+    "tailwindcss": "3.4.7",
+    "eslint": "8.57.0",
+    "eslint-config-next": "14.2.5"
   }
 }

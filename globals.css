@@ -1,0 +1,174 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-display: 'Playfair Display', serif;
+  --font-body: 'DM Sans', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: #faf8f3;
+  color: #292219;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Paper grain overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f5f0e8;
+}
+::-webkit-scrollbar-thumb {
+  background: #b5a48e;
+  border-radius: 3px;
+}
+
+/* Focus styles */
+:focus-visible {
+  outline: 2px solid #c4622d;
+  outline-offset: 2px;
+}
+
+/* Utility classes */
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-8 py-4 
+           bg-ink-900 text-cream font-body font-medium text-base
+           rounded-none border-2 border-ink-900
+           hover:bg-rust hover:border-rust
+           transition-all duration-200 ease-in-out
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rust
+           disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-ink-900 disabled:hover:border-ink-900;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 px-8 py-4 
+           bg-transparent text-ink-900 font-body font-medium text-base
+           rounded-none border-2 border-ink-900
+           hover:bg-ink-900 hover:text-cream
+           transition-all duration-200 ease-in-out
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink-900
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .input-field {
+    @apply w-full px-4 py-3.5 
+           bg-white border-2 border-ink-200 
+           font-body text-ink-900 text-base
+           rounded-none
+           placeholder:text-ink-400
+           focus:outline-none focus:border-ink-900
+           transition-colors duration-150;
+  }
+
+  .card-paper {
+    @apply bg-white border border-ink-100 shadow-sm;
+  }
+
+  .section-label {
+    @apply text-xs font-body font-semibold tracking-[0.15em] uppercase text-ink-500;
+  }
+}
+
+/* Loading shimmer animation */
+.shimmer-bg {
+  background: linear-gradient(
+    90deg,
+    #f5f0e8 25%,
+    #e4ddd1 50%,
+    #f5f0e8 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Page flip animation for loading */
+@keyframes pageTurn {
+  0% { transform: rotateY(0deg); }
+  50% { transform: rotateY(-90deg); }
+  100% { transform: rotateY(0deg); }
+}
+
+.page-turn {
+  animation: pageTurn 1.2s ease-in-out infinite;
+  transform-style: preserve-3d;
+  transform-origin: left center;
+}
+
+/* Stagger fade-up for children */
+.stagger-children > *:nth-child(1) { animation-delay: 0ms; }
+.stagger-children > *:nth-child(2) { animation-delay: 100ms; }
+.stagger-children > *:nth-child(3) { animation-delay: 200ms; }
+.stagger-children > *:nth-child(4) { animation-delay: 300ms; }
+.stagger-children > *:nth-child(5) { animation-delay: 400ms; }
+
+.animate-fade-up {
+  opacity: 0;
+  animation: fadeUp 0.7s ease forwards;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Progress bar */
+.progress-bar {
+  background: linear-gradient(90deg, #c4622d, #8a7460, #2d5a3d);
+  background-size: 200% 100%;
+  animation: progressFlow 1.5s ease-in-out infinite;
+}
+
+@keyframes progressFlow {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Decorative rule */
+.ornamental-rule {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.ornamental-rule::before,
+.ornamental-rule::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #cfc4b0;
+}
